@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white shadow mb-2">
-    <header class="px-4 py-2 flex justify-between items-center">
+  <div class="bg-white shadow mb-2" v-if="loading">
+    <header  class="px-4 py-2 flex justify-between items-center">
       <h2 class="text-lg font-mono font-bold">Listings</h2>
       <span class="text-xs text-primary-500 font-bold">
           <router-link :to="{ name: 'listings'}">See all</router-link>
