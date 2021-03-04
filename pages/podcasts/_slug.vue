@@ -59,12 +59,11 @@ export default {
       page: 1,
       per_page: 5,
       loading: false,
-      title: this.$route.params.slug
     };
   },
   head() {
     return {
-      title: this.title,
+      title: this.$route.params.slug,
       meta: [
         {
           hid: "description",

@@ -34,7 +34,7 @@
 
             <template v-else>
               <article
-                v-if="podcast.podcast"
+                
                 v-for="(podcast, index) in podcasts"
                 :key="index"
                 class="flex p-4 border-b bg-white mb-3 ld:rounded ld:shadow"
