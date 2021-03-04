@@ -164,12 +164,11 @@
         },
      '$route.query': '$fetch',
 
-        async fetch() {
-            await this.getPosById()
-            // this.title = this.post.title
-            },
+        
 
-        async mounted () {
+        async created () {
+            // this.title = this.post.title
+            await this.getPosById()
             await this.getPostByUser()
             await this.getNextPostByUser()
             

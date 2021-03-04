@@ -4,7 +4,7 @@
       class="px-6 py-4 bg-white shadow border-t-4 md:border-t-8 border-pink-600 lg:mx-28"
     >
       <div class="flex justify-between">
-        <h2 class="text-2xl font-bold md:text-3xl">{{ tagSelected }}</h2>
+        <h2 class="text-2xl font-bold md:text-3xl">{{ this.$route.params.tag }}</h2>
         <div>
           <button
             class="text-primary-500 font-semibold hover:bg-primary-500 hover:bg-opacity-10 hover:text-primary-500 rounded-md py-2 text-center px-4 focus:outline-none"
@@ -80,12 +80,12 @@
           </h3>
         </div>
 
-        <template v-if="$fetchState.pending">
+        <template v-if="loading">
          
           <SkeletonCardPost  v-for="(item, index) in Array(4)" :key="index"/>
         </template>
 
-        <p v-else-if="$fetchState.error">Error while fetching posts</p>
+        <!-- <p v-else-if="$fetchState.error">Error while fetching posts</p> -->
         <template v-else>
             
         <Post v-for="(post, index) in posts" :key="index" :post="post" />
@@ -127,18 +127,16 @@ export default {
   },
   data() {
     return {
-      tagSelected: this.$route.params.tag,
       posts: [],
       page: 1,
       per_page: 4,
       items: [],
       loading: true,
-      title: this.$route.params.tag
     };
   },
   head() {
       return {
-          title: this.title,
+          title: this.$route.params.tag,
           meta: [
           {
               hid: 'description',
@@ -149,17 +147,16 @@ export default {
       }
   },
 
-  async fetch() {
+  async created() {
     await this.getPostByTag()
-    
-    
     
     },
   methods: {
     async getPostByTag() {
+      this.loading = true
       try {
         const res = await this.$axios.get("/articles", {
-            params: { tag: this.tagSelected, per_page: this.per_page }
+            params: { tag: this.$route.params.tag, per_page: this.per_page, page: this.page  }
           });
           this.posts = res.data.map((item, i) => {
             delete item.social_image;
@@ -167,6 +164,9 @@ export default {
               ...item
             };
           });
+
+          // console.log(res)
+          this.loading = false
         
       } catch (error) {
         console.error(error)
@@ -178,7 +178,7 @@ export default {
     async infiniteHandler($state) {
       this.page++;
       const res = await this.$axios.get("/articles", {
-        params: { tag: this.tagSelected, page: this.page }
+        params: { tag: this.$route.params.tag, page: this.page, page: this.page  }
       });
 
       if (res.data.length > 0) {

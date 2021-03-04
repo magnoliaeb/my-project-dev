@@ -23,7 +23,7 @@
     </div>
     <div class="lg:flex lg:justify-center">
       <div class="lg:w-6/12">
-        <template v-if="$fetchState.pending">
+        <template v-if="loading">
           <SkeletonCardPodcast v-for="(item, index) in Array(5)" :key="index" />
         </template>
         <template v-else>
@@ -74,16 +74,18 @@ export default {
       ]
     };
   },
-  async fetch() {
+  async created() {
     await this.getPoscasts();
   },
   methods: {
     async getPoscasts() {
+      this.loading = true
       try {
         const res = await this.$axios.get("/podcast_episodes", {
-          params: { username: this.$route.params.slug, per_page: this.per_page }
+          params: { username: this.$route.params.slug, per_page: this.per_page, page: this.page  }
         });
         this.podcasts = res.data;
+        this.loading = false
         
       } catch (error) {
         console.error(error)
@@ -108,4 +110,3 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>

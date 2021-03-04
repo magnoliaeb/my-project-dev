@@ -19,10 +19,10 @@
           </div>
         </div>
 
-          <template v-if="$fetchState.pending">
+          <template v-if="loading">
       <SkeletonCardPost v-for="(item, index) in Array(4)" :key="index" />
     </template>
-    <p v-else-if="$fetchState.error">Error while fetching posts</p>
+    <!-- <p v-else-if="$fetchState.error">Error while fetching posts</p> -->
     <template v-else>
       <Post  v-for="(post, index) in posts" :key="index" :post="post" />
 
@@ -71,7 +71,7 @@ export default {
   },
   
 
-  async fetch() {
+  async created() {
     await this.getPostsByTop();
   },
   watch: {
@@ -95,10 +95,11 @@ export default {
 
   methods: {
     async getPostsByTop() {
+      this.loading = true
 
       try {
         const res = await this.$axios.get("/articles", {
-          params: { per_page: this.per_page, top: this.getTop(), state: 'rising', tag: 'vue' }
+          params: { per_page: this.per_page, top: this.getTop(), state: 'rising', tag: 'vue', page: this.page  }
         });
   
         this.posts = res.data.map((item, i) => {
@@ -113,11 +114,13 @@ export default {
             };
           }
         });
+        this.loading = false
         
       } catch (error) {
         console.error(error)
         return false
       }
+      
       
 
 
@@ -144,10 +147,11 @@ export default {
       }
       return top
     },
+    
     async infiniteHandler($state) {
       this.page++;
       const res = await this.$axios.get("/articles", {
-        params: { per_page: this.per_page, top: this.getTop(), state: 'rising', tag: 'vue' }
+        params: { per_page: this.per_page, top: this.getTop(), state: 'rising', tag: 'vue', page: this.page  }
       });
       if (res.data.length > 0) {
         this.posts = this.posts.concat(

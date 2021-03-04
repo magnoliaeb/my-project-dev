@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white shadow mb-2">
     <header class="px-4 py-2">
-      <h2 class="text-lg font-mono font-bold">#{{ title }}</h2>
+      <h2 v-if="!loading" class="text-lg font-mono font-bold">#{{ title }}</h2>
     </header>
 
     <template v-if="loading">

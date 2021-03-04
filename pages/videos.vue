@@ -59,7 +59,7 @@ import SkeletonCardVideo from '../components/shared/SkeletonCardVideo.vue'
             }
         },
 
-        async created() {
+        async fetch() {
             await this.getVideos()
         },
 

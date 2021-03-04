@@ -22,12 +22,7 @@
           <p v-else-if="$fetchState.error">Error while fetching posts</p>
 
           <template v-else>
-
-            <Post
-              v-for="(post, index) in posts"
-              :key="index"
-              :post="post"
-            />
+            <Post v-for="(post, index) in posts" :key="index" :post="post" />
 
             <infinite-loading @infinite="infiniteHandler">
               <div slot="spinner">
@@ -42,7 +37,7 @@
         <div class="hidden lg:w-1/4 lg:block px-2">
           <Dev />
           <div>
-             <ListListings />
+            <ListListings />
             <ListRight :per_page="5" class="border-b " :title="'news'" />
             <ListRight :per_page="5" :title="'news'" />
             <ListRight :per_page="4" :title="'help'" />
@@ -50,7 +45,7 @@
             <ListRight :per_page="2" :title="'explainlikeimfive'" />
             <ListRight :per_page="4" :title="'challenge'" />
             <ListRight :per_page="2" :title="'meta'" />
-            <ListRight :per_page="5" :title="'watercooler'" /> 
+            <ListRight :per_page="5" :title="'watercooler'" />
           </div>
         </div>
       </div>
@@ -90,39 +85,44 @@ export default {
   },
 
   async fetch() {
-    await this.getPosts()
-   
+    await this.getPosts();
   },
 
   methods: {
     async getPosts() {
-      try {
-        const res = await this.$axios.get("/articles", {
-       params: { per_page: this.per_page, state: 'rising', tag: 'vue' }
-     });
-     this.posts = res.data.map((item, i) => {
-       if (i === 0) {
-         return {
-           ...item
-         };
-       } else {
-         delete item.social_image;
-         return {
-           ...item
-         };
-       }
-     });
-        
-      } catch (error) {
-        console.error(error)
-        return false
-      }
+      
+      const res = await this.$axios.get("/articles", {
+        params: {
+          per_page: this.per_page,
+          state: "rising",
+          tag: "vue",
+          page: this.page
+        }
+      });
+
+      this.posts = res.data.map((item, i) => {
+        if (i === 0) {
+          return {
+            ...item
+          };
+        } else {
+          delete item.social_image;
+          return {
+            ...item
+          };
+        }
+      });
 
     },
     async infiniteHandler($state) {
       this.page++;
       const res = await this.$axios.get("/articles", {
-       params: { per_page: this.per_page, state: 'rising', tag: 'vue' }
+        params: {
+          per_page: this.per_page,
+          state: "rising",
+          tag: "vue",
+          page: this.page
+        }
       });
       if (res.data.length > 0) {
         this.posts = this.posts.concat(

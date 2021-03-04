@@ -74,7 +74,7 @@ import SkeletonTag from '../../components/shared/SkeletonTag.vue'
         methods: {
             async getTags() {
                 try {
-                    const res = await this.$axios.get('/tags', { params: { per_page: this.per_page }})
+                    const res = await this.$axios.get('/tags', { params: { per_page: this.per_page, page: this.page  }})
                     this.tags = res.data
                     
                 } catch (error) {

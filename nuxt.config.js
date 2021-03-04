@@ -42,7 +42,8 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL:'https://dev.to/api'
+    baseURL:'https://dev.to/api',
+    timeout: 20000
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

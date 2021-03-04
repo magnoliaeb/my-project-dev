@@ -1,10 +1,10 @@
 <template>
   <div>
-    <template v-if="$fetchState.pending">
+    <template v-if="loading">
       <SkeletonCardListing v-for="(item, index) in Array(3)" :key="item" />
     </template>
 
-    <p v-else-if="$fetchState.error">Error while fetching listings</p>
+    <!-- <p v-else-if="$fetchState.error">Error while fetching listings</p> -->
 
     <template v-else>
       <listing
@@ -53,21 +53,23 @@ export default {
     $route: "getListingsByCategory"
   },
 
-  async fetch() {
+  async created() {
     await this.getListingsByCategory();
   },
 
   methods: {
     async getListingsByCategory() {
+      this.loading = true 
       try {
         const res = await this.$axios.get(
           `/listings/category/${this.$route.params.category}`,
           {
-            params: { per_page: this.per_page }
+            params: { per_page: this.per_page, page: this.page  }
           }
         );
   
         this.listings = res.data;
+        this.loading = false
         
       } catch (error) {
         console.error(error)
